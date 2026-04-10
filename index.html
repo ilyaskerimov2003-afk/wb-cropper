@@ -1,18 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Кадрирование</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; padding: 0; overflow: hidden; }
+        body { background: #000; color: #fff; font-family: -apple-system, sans-serif; margin: 0; padding: 0; overflow: hidden; }
         .container { display: flex; flex-direction: column; height: 100vh; }
         #image-wrapper { flex-grow: 1; background: #111; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        img { max-width: 100%; display: block; }
-        .controls { padding: 15px; background: #1c1c1d; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 30px; }
+        img { max-width: 100%; display: block; opacity: 0; }
+        .controls { padding: 15px 15px 30px 15px; background: #1c1c1d; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-top: 1px solid #333; }
         button { border: none; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; }
         .btn-next { background: #007bff; color: white; grid-column: span 2; }
         .btn-border { background: #ffffff; color: #000; }
@@ -24,27 +22,29 @@
     <div class="container">
         <div id="image-wrapper"><img id="target-image"></div>
         <div class="controls">
-            <div id="counter" class="info">Подключение...</div>
+            <div id="counter" class="info">Загрузка...</div>
             <button class="btn-border" onclick="setFullImage()">⚪ С полями</button>
             <button class="btn-rotate" onclick="rotateCrop()">🔄 Повернуть</button>
             <button class="btn-next" id="next-btn" onclick="nextPhoto()">Далее</button>
         </div>
     </div>
 
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
-        let photos = [];
-        let format = '10x15';
-        
-        // Пытаемся достать данные из ссылки
+        const token = "7666463332:AAEIXtOBCScgV7GLlDkC49FhfsU30oBO29o";
         const urlParams = new URLSearchParams(window.location.search);
+        
+        let paths = [];
+        let format = '10x15';
         try {
-            photos = JSON.parse(urlParams.get('photos') || '[]');
-            format = urlParams.get('format') || '10x15';
-        } catch(e) {}
+            paths = JSON.parse(urlParams.get('p') || '[]');
+            format = urlParams.get('f') || '10x15';
+        } catch(e) { console.error("Ошибка данных"); }
 
         let currentIndex = 0;
         let cropper;
@@ -56,18 +56,26 @@
             if (cropper) cropper.destroy();
             let aspect = currentAspect;
             if (img.naturalWidth > img.naturalHeight) aspect = 1 / aspect;
-            cropper = new Cropper(img, { aspectRatio: aspect, viewMode: 1, dragMode: 'move', autoCropArea: 1, background: false });
+            cropper = new Cropper(img, {
+                aspectRatio: aspect,
+                viewMode: 1,
+                dragMode: 'move',
+                autoCropArea: 1,
+                background: false
+            });
+            img.style.opacity = "1";
         }
 
         function loadPhoto(index) {
-            if (index >= photos.length) {
+            if (index >= paths.length) {
                 tg.sendData(JSON.stringify(results));
                 return;
             }
-            document.getElementById('counter').innerText = `Фото ${index + 1} из ${photos.length}`;
-            img.src = photos[index];
+            img.style.opacity = "0";
+            document.getElementById('counter').innerText = `Фото ${index + 1} из ${paths.length}`;
+            img.src = `https://api.telegram.org/file/bot${token}/${paths[index]}`;
             img.onload = initCropper;
-            if (index === photos.length - 1) document.getElementById('next-btn').innerText = "Завершить";
+            if (index === paths.length - 1) document.getElementById('next-btn').innerText = "Завершить";
         }
 
         function setFullImage() {
@@ -76,18 +84,23 @@
         }
 
         function rotateCrop() {
+            if (!cropper) return;
             currentAspect = 1 / cropper.options.aspectRatio;
             cropper.setAspectRatio(currentAspect);
         }
 
         function nextPhoto() {
+            if (!cropper) return;
             const d = cropper.getData();
-            results.push({ index: currentIndex, x: Math.round(d.x), y: Math.round(d.y), w: Math.round(d.width), h: Math.round(d.height), is_full: false });
+            results.push({ 
+                index: currentIndex, x: Math.round(d.x), y: Math.round(d.y), 
+                w: Math.round(d.width), h: Math.round(d.height), is_full: false 
+            });
             currentIndex++; loadPhoto(currentIndex);
         }
 
-        if (photos.length > 0) loadPhoto(0);
-        else document.getElementById('counter').innerText = "Ошибка: фото не переданы";
+        if (paths.length > 0) loadPhoto(0);
+        else document.getElementById('counter').innerText = "Нет фото для кадрирования";
     </script>
 </body>
 </html>
