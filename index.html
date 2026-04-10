@@ -1,116 +1,108 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.4">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Кадрирование для ВБ</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { background-color: #000; color: #fff; font-family: -apple-system, sans-serif; margin: 0; padding: 0; overflow: hidden; }
+        .container { display: flex; flex-direction: column; height: 100vh; }
+        #image-wrapper { flex-grow: 1; background-color: #111; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        img { max-width: 100%; display: block; }
+        .controls { padding: 15px 15px 30px 15px; background: #1c1c1d; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-top: 1px solid #333; }
+        button { border: none; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .btn-next { background: #007bff; color: white; grid-column: span 2; }
+        .btn-border { background: #ffffff; color: #000; }
+        .btn-rotate { background: #444; color: #fff; }
+        .info { text-align: center; color: #888; font-size: 13px; grid-column: span 2; margin-bottom: 5px; }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="utf-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Кадрирование&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://telegram.org/js/telegram-web-app.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>body { background: #000; color: #fff; font-family: sans-serif; margin: 0; padding: 0; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.container { display: flex; flex-direction: column; height: 100vh; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>#image-wrapper { flex-grow: 1; background: #111; display: flex; align-items: center; justify-content: center; overflow: hidden; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>img { max-width: 100%; display: block; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.controls { padding: 15px; background: #1c1c1d; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>button { border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.btn-next { background: #007bff; color: white; grid-column: span 2; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.btn-border { background: #f8f9fa; color: #000; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.btn-rotate { background: #444; color: #fff; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.info { text-align: center; color: #aaa; font-size: 13px; grid-column: span 2; margin-bottom: 5px; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="container"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="image-wrapper"&gt;&lt;img id="target-image"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="controls"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="counter" class="info"&gt;Загрузка фото...&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="btn-border" onclick="setFullImage()"&gt;⚪ С полями&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="btn-rotate" onclick="rotateCrop()"&gt;🔄 Повернуть&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;button class="btn-next" id="next-btn" onclick="nextPhoto()"&gt;Далее&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const tg = window.Telegram.WebApp;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>tg.expand();<span class="Apple-converted-space"> </span></p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>const urlParams = new URLSearchParams(window.location.search);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const photos = JSON.parse(urlParams.get('photos') || '[]');</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const format = urlParams.get('format') || '10x15';</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>let currentIndex = 0;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>let cropper;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>let currentAspect = (format === '10x15' || format === '4x6 Полароид') ? 2/3 : 3/4;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const results = [];</p>
-<p class="p1"><span class="Apple-converted-space">        </span>const img = document.getElementById('target-image');</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function initCropper() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (cropper) cropper.destroy();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Если фото альбомное, переворачиваем рамку сразу</p>
-<p class="p1"><span class="Apple-converted-space">            </span>let aspect = currentAspect;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (img.naturalWidth &gt; img.naturalHeight) aspect = 1 / aspect;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">            </span>cropper = new Cropper(img, {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>aspectRatio: aspect,</p>
-<p class="p1"><span class="Apple-converted-space">                </span>viewMode: 1,</p>
-<p class="p1"><span class="Apple-converted-space">                </span>dragMode: 'move',</p>
-<p class="p1"><span class="Apple-converted-space">                </span>autoCropArea: 1,</p>
-<p class="p1"><span class="Apple-converted-space">                </span>background: false</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function loadPhoto(index) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (index &gt;= photos.length) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>tg.sendData(JSON.stringify(results));</p>
-<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('counter').innerText = `Фото ${index + 1} из ${photos.length}`;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>img.src = photos[index];</p>
-<p class="p1"><span class="Apple-converted-space">            </span>img.onload = initCropper;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (index === photos.length - 1) document.getElementById('next-btn').innerText = "Завершить";</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function setFullImage() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>results.push({ index: currentIndex, is_full: true });</p>
-<p class="p1"><span class="Apple-converted-space">            </span>currentIndex++;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>loadPhoto(currentIndex);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function rotateCrop() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const newAspect = 1 / cropper.options.aspectRatio;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>cropper.setAspectRatio(newAspect);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>function nextPhoto() {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>const d = cropper.getData();</p>
-<p class="p1"><span class="Apple-converted-space">            </span>results.push({<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>index: currentIndex,<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>x: Math.round(d.x), y: Math.round(d.y),<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>w: Math.round(d.width), h: Math.round(d.height),<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">                </span>is_full: false<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p1"><span class="Apple-converted-space">            </span>currentIndex++;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>loadPhoto(currentIndex);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>loadPhoto(0);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+    <div class="container">
+        <div id="image-wrapper"><img id="target-image"></div>
+        <div class="controls">
+            <div id="counter" class="info">Загрузка...</div>
+            <button class="btn-border" onclick="setFullImage()">⚪ С полями</button>
+            <button class="btn-rotate" onclick="rotateCrop()">🔄 Повернуть</button>
+            <button class="btn-next" id="next-btn" onclick="nextPhoto()">Далее</button>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const photos = JSON.parse(urlParams.get('photos') || '[]');
+        const format = urlParams.get('format') || '10x15';
+        
+        let currentIndex = 0;
+        let cropper;
+        let currentAspect = (format === '10x15' || format === '4x6 Полароид') ? 2/3 : 3/4;
+        const results = [];
+        const img = document.getElementById('target-image');
+
+        function initCropper() {
+            if (cropper) cropper.destroy();
+            let aspect = currentAspect;
+            if (img.naturalWidth > img.naturalHeight) aspect = 1 / aspect;
+
+            cropper = new Cropper(img, {
+                aspectRatio: aspect,
+                viewMode: 1,
+                dragMode: 'move',
+                autoCropArea: 1,
+                background: false,
+                responsive: true
+            });
+        }
+
+        function loadPhoto(index) {
+            if (index >= photos.length) {
+                tg.sendData(JSON.stringify(results));
+                tg.close();
+                return;
+            }
+            document.getElementById('counter').innerText = `Фото ${index + 1} из ${photos.length}`;
+            img.src = photos[index];
+            img.onload = initCropper;
+            if (index === photos.length - 1) document.getElementById('next-btn').innerText = "Завершить";
+        }
+
+        function setFullImage() {
+            results.push({ index: currentIndex, is_full: true });
+            currentIndex++;
+            loadPhoto(currentIndex);
+        }
+
+        function rotateCrop() {
+            if (!cropper) return;
+            const newAspect = 1 / cropper.options.aspectRatio;
+            cropper.setAspectRatio(newAspect);
+        }
+
+        function nextPhoto() {
+            if (!cropper) return;
+            const d = cropper.getData();
+            results.push({ 
+                index: currentIndex, 
+                x: Math.round(d.x), y: Math.round(d.y), 
+                w: Math.round(d.width), h: Math.round(d.height), 
+                is_full: false 
+            });
+            currentIndex++;
+            loadPhoto(currentIndex);
+        }
+
+        if (photos.length > 0) {
+            loadPhoto(0);
+        } else {
+            document.getElementById('counter').innerText = "Ошибка: фото не найдены";
+        }
+    </script>
 </body>
 </html>
