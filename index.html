@@ -8,7 +8,7 @@
     <style>
         body { background: #000; color: #fff; font-family: -apple-system, sans-serif; margin: 0; padding: 0; overflow: hidden; }
         .container { display: flex; flex-direction: column; height: 100vh; }
-        #image-wrapper { flex-grow: 1; background: #111; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        #image-wrapper { flex-grow: 1; background: #111; display: flex; align-items: center; justify-content: center; }
         img { max-width: 100%; display: block; opacity: 0; }
         .controls { padding: 15px 15px 30px 15px; background: #1c1c1d; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-top: 1px solid #333; }
         button { border: none; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; }
@@ -37,18 +37,20 @@
         tg.expand();
 
         const token = "7666463332:AAEIXtOBCScgV7GLlDkC49FhfsU30oBO29o";
-        const urlParams = new URLSearchParams(window.location.search);
-        
         let paths = [];
         let format = '10x15';
+
+        // Извлекаем данные из хэша (после символа #)
         try {
-            paths = JSON.parse(urlParams.get('p') || '[]');
-            format = urlParams.get('f') || '10x15';
+            const hashData = window.location.hash.substring(1); 
+            const params = new URLSearchParams(hashData);
+            paths = JSON.parse(params.get('p') || '[]');
+            format = new URLSearchParams(window.location.search).get('f') || '10x15';
         } catch(e) { console.error("Ошибка данных"); }
 
         let currentIndex = 0;
         let cropper;
-        let currentAspect = (format === '10x15' || format === '4x6 Полароид') ? 2/3 : 3/4;
+        let currentAspect = (format === '10x15') ? 2/3 : 3/4;
         const results = [];
         const img = document.getElementById('target-image');
 
@@ -56,13 +58,7 @@
             if (cropper) cropper.destroy();
             let aspect = currentAspect;
             if (img.naturalWidth > img.naturalHeight) aspect = 1 / aspect;
-            cropper = new Cropper(img, {
-                aspectRatio: aspect,
-                viewMode: 1,
-                dragMode: 'move',
-                autoCropArea: 1,
-                background: false
-            });
+            cropper = new Cropper(img, { aspectRatio: aspect, viewMode: 1, dragMode: 'move', autoCropArea: 1, background: false });
             img.style.opacity = "1";
         }
 
@@ -84,23 +80,18 @@
         }
 
         function rotateCrop() {
-            if (!cropper) return;
             currentAspect = 1 / cropper.options.aspectRatio;
             cropper.setAspectRatio(currentAspect);
         }
 
         function nextPhoto() {
-            if (!cropper) return;
             const d = cropper.getData();
-            results.push({ 
-                index: currentIndex, x: Math.round(d.x), y: Math.round(d.y), 
-                w: Math.round(d.width), h: Math.round(d.height), is_full: false 
-            });
+            results.push({ index: currentIndex, x: Math.round(d.x), y: Math.round(d.y), w: Math.round(d.width), h: Math.round(d.height), is_full: false });
             currentIndex++; loadPhoto(currentIndex);
         }
 
         if (paths.length > 0) loadPhoto(0);
-        else document.getElementById('counter').innerText = "Нет фото для кадрирования";
+        else document.getElementById('counter').innerText = "Ошибка: фото не переданы";
     </script>
 </body>
 </html>
